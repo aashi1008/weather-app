@@ -7,23 +7,44 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-    - name: Create .env
-      run: cp .env.example .env
-    - name: Create .test.env
-      run: cp .test.env.example .test.env
-    - name: Create pems
-      run: go run .tools/rsa/keygen.go
-    - name: Build docker images
-      run: docker-compose build
-    - name: Run docker images
-      run: docker-compose up -d
-    - name: Run tests
-      run: docker exec -t goserver go test -v ./...
-    - name: Clean up
-      if: success() || failure()
-      run: docker-compose down --rmi all -v --remove-orphans
+      # Step 1: Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Set up environment variables
+      - name: Copy .env files
+        run: |
+          cp .env.example .env
+          cp .test.env.example .test.env
+
+      # Step 3: Optional: Generate certificates or keys if needed
+      # Adjust this if you have a keygen script
+      - name: Generate keys
+        run: |
+          if [ -f ".tools/rsa/keygen.go" ]; then
+            go run .tools/rsa/keygen.go
+          else
+            echo "Keygen script not found, skipping..."
+          fi
+
+      # Step 4: Build Docker images
+      - name: Build Docker images
+        run: docker-compose build
+
+      # Step 5: Start containers in detached mode
+      - name: Start Docker containers
+        run: docker-compose up -d
+
+      # Step 6: Run tests inside the container
+      # Replace `weather-app` with your service name in docker-compose
+      - name: Run tests
+        run: docker exec -t weather-app npm test
+
+      # Step 7: Clean up Docker environment
+      - name: Clean up
+        if: success() || failure()
+        run: docker-compose down --rmi all -v --remove-orphans
