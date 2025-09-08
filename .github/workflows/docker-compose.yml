@@ -15,9 +15,63 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # Step 2: Set up Go (optional, but recommended)
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.23.7'
+
+      # Step 3: Create .env files
       - name: Create .env files
         run: |
           echo "WEATHER_API_URL=https://api.open-meteo.com/v1/forecast" > .env
           echo "PORT=8080" >> .env
-          echo "WEATHER_API_URL=https://api.open-meteo.com/v1/forecast" > .test.env
-          echo "PORT=8080" >> .test.env
+
+      # Step 4: Verify files exist
+      - name: Verify files
+        run: |
+          ls -la
+          echo "--- docker-compose.yml content ---"
+          cat docker-compose.yml
+          echo "--- Dockerfile content ---"
+          head -5 Dockerfile
+
+      # Step 5: Build Docker images
+      - name: Build Docker images
+        run: make build-docker
+
+      # Step 6: Start containers in detached mode
+      - name: Start Docker containers
+        run: make up
+
+      # Step 7: Wait for services to be ready
+      - name: Wait for services
+        run: sleep 15
+
+      # Step 8: Check if service is running
+      - name: Check container status
+        run: |
+          docker ps
+          docker compose logs weather-app
+
+      # Step 9: Health check
+      - name: Health check
+        run: |
+          curl -f http://localhost:8080/ || (echo "Health check failed" && docker compose logs weather-app && exit 1)
+
+      # Step 10: Run tests inside the container
+      - name: Run tests
+        run: |
+          docker exec weather-app go test -v ./tests/... || (echo "Tests failed" && docker compose logs weather-app && exit 1)
+
+      # Step 11: Run tests with coverage
+      - name: Run tests with coverage
+        run: |
+          docker exec weather-app go test -v ./tests/... -cover
+
+      # Step 12: Clean up Docker environment
+      - name: Clean up
+        if: always()
+        run: |
+          docker compose logs weather-app || true
+          docker compose down --rmi all -v --remove-orphans || true
