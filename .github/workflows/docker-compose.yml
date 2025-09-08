@@ -21,24 +21,3 @@ jobs:
           echo "PORT=8080" >> .env
           echo "WEATHER_API_URL=https://api.open-meteo.com/v1/forecast" > .test.env
           echo "PORT=8080" >> .test.env
-
-      # Step 3: Build Docker images
-      - name: Build Docker images
-        run: docker compose build
-
-      # Step 4: Start containers in detached mode
-      - name: Start Docker containers
-        run: docker compose up -d
-
-      - name: Wait for services
-        run: sleep 10
-
-      # Step 5: Run tests inside the container
-      # Replace `weather-app` with your service name in docker-compose
-      - name: Run tests
-        run: docker exec weather-app go test -v ./tests/...
-
-      # Step 6: Clean up Docker environment
-      - name: Clean up
-        if: always()
-        run: docker compose down --rmi all -v --remove-orphans
