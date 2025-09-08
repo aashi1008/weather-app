@@ -15,36 +15,27 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: Set up environment variables
-      - name: Copy .env files
+      - name: Create .env files
         run: |
-          cp .env.example .env
-          cp .test.env.example .test.env
+          echo "WEATHER_API_URL=https://api.open-meteo.com/v1/forecast" > .env
+          echo "PORT=8080" >> .env
+          echo "WEATHER_API_URL=https://api.open-meteo.com/v1/forecast" > .test.env
+          echo "PORT=8080" >> .test.env
 
-      # Step 3: Optional: Generate certificates or keys if needed
-      # Adjust this if you have a keygen script
-      - name: Generate keys
-        run: |
-          if [ -f ".tools/rsa/keygen.go" ]; then
-            go run .tools/rsa/keygen.go
-          else
-            echo "Keygen script not found, skipping..."
-          fi
-
-      # Step 4: Build Docker images
+      # Step 3: Build Docker images
       - name: Build Docker images
         run: docker-compose build
 
-      # Step 5: Start containers in detached mode
+      # Step 4: Start containers in detached mode
       - name: Start Docker containers
         run: docker-compose up -d
 
-      # Step 6: Run tests inside the container
+      # Step 5: Run tests inside the container
       # Replace `weather-app` with your service name in docker-compose
       - name: Run tests
         run: docker exec -t weather-app npm test
 
-      # Step 7: Clean up Docker environment
+      # Step 6: Clean up Docker environment
       - name: Clean up
         if: success() || failure()
         run: docker-compose down --rmi all -v --remove-orphans
