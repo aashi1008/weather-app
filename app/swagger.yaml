@@ -1,0 +1,72 @@
+openapi: 3.0.0
+info:
+  title: Weather API
+  description: Simple API to fetch current weather using Open-Meteo
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080
+
+paths:
+  /weather:
+    get:
+      summary: Get current weather for a location
+      description: Returns current weather based on latitude and longitude.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                lat:
+                  type: string
+                  example: "53.551086"
+                lon:
+                  type: string
+                  example: "9.9936820"
+      responses:
+        "200":
+          description: Successful response with current weather
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  latitude:
+                    type: number
+                    example: 53.56
+                  longitude:
+                    type: number
+                    example: 10.0
+                  timezone:
+                    type: string
+                    example: "GMT"
+                  currentWeatherUnits:
+                    type: object
+                    properties:
+                      time:
+                        type: string
+                        example: "iso8601"
+                      temperature:
+                        type: string
+                        example: "°C"
+                      windspeed:
+                        type: string
+                        example: "km/h"
+                  currentWeather:
+                    type: object
+                    properties:
+                      time:
+                        type: string
+                        example: "2023-10-06T13:15"
+                      temperature:
+                        type: number
+                        example: 16.6
+                      windspeed:
+                        type: number
+                        example: 13.5
+        "400":
+          description: Invalid request
+        "500":
+          description: Internal server error
