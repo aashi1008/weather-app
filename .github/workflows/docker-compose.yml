@@ -24,18 +24,21 @@ jobs:
 
       # Step 3: Build Docker images
       - name: Build Docker images
-        run: docker-compose build
+        run: docker compose build
 
       # Step 4: Start containers in detached mode
       - name: Start Docker containers
-        run: docker-compose up -d
+        run: docker compose up -d
+
+      - name: Wait for services
+        run: sleep 10
 
       # Step 5: Run tests inside the container
       # Replace `weather-app` with your service name in docker-compose
       - name: Run tests
-        run: docker exec -t weather-app npm test
+        run: docker exec weather-app go test -v ./tests/...
 
       # Step 6: Clean up Docker environment
       - name: Clean up
-        if: success() || failure()
-        run: docker-compose down --rmi all -v --remove-orphans
+        if: always()
+        run: docker compose down --rmi all -v --remove-orphans
