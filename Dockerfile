@@ -3,12 +3,13 @@ WORKDIR /app
 
 # Copy and build
 COPY go.mod ./
+COPY go.sum ./
 
-#RUN go mod download
+RUN go mod download
 
 COPY . .
 
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o weather-app ./cmd
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o weather-app ./cmd/main.go
 #RUN go build -o weather-app ./cmd
 
 # Step 2: Run the binary in a lightweight container

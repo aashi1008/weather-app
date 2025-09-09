@@ -1,0 +1,41 @@
+name: Docker Compose CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Go (optional, but recommended)
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.23.7'
+
+      # Step 3: Create .env files
+      - name: Create .env files
+        run: |
+          echo "WEATHER_API_URL=https://api.open-meteo.com/v1/forecast" > .env
+          echo "PORT=8080" >> .env
+
+      # Step 4: Verify files exist
+      - name: Verify files
+        run: |
+          ls -la
+          echo "--- docker-compose.yml content ---"
+          cat docker-compose.yml
+          echo "--- Dockerfile content ---"
+          head -5 Dockerfile
+
+      # Step 5: Build Docker images
+      - name: Build Docker images
+        run: make build-docker
