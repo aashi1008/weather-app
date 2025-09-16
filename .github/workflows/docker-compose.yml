@@ -49,10 +49,20 @@ jobs:
         run: sleep 15
 
       # Step 8: Check container status
-      - name: Check container status
+      - name: Wait for container and check status
         run: |
+          echo "Waiting for container to be ready..."
+          sleep 5
+          
+          echo "=== Container Status ==="
           docker ps
-          make logs
+          
+          echo "=== Container Logs (last 20 lines) ==="
+          docker logs --tail=20 weather-app
+          
+          echo "=== Container Inspect ==="
+          docker inspect weather-app --format='{{.State.Status}}' --format='{{.State.Health.Status}}' || true
+        timeout-minutes: 2
 
       # Step 9: Test weather API endpoint
       - name: Test weather API endpoint
