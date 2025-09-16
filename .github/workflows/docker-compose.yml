@@ -39,3 +39,17 @@ jobs:
       # Step 5: Build Docker images
       - name: Build Docker images
         run: make build-docker
+
+      # Step 6: Start containers
+      - name: Start Docker containers
+        run: make up
+
+      # Step 7: Wait for services to be ready
+      - name: Wait for services
+        run: sleep 15
+
+      # Step 8: Check container status
+      - name: Check container status
+        run: |
+          docker ps
+          make logs

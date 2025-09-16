@@ -28,6 +28,9 @@ clean:
 	rm -rf bin/
 	docker compose down --rmi all -v
 
+logs:
+	docker logs --follow weather-app
+
 help:
 	@echo "Available commands:"
 	@echo "  build       - Build the application"
