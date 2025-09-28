@@ -27,7 +27,7 @@ func setupHandler(mockResponse string) *WeatherHandler {
 	}
 
 	ws := service.NewWeatherService(cfg)
-	return NewWeatherHandler(ws)
+	return NewWeatherHandler(ws, nil)
 }
 
 func TestGetWeatherHandler_Success(t *testing.T) {
