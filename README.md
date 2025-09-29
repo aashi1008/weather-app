@@ -38,7 +38,7 @@ It follows a **clean architecture approach** with separate layers for configurat
 │   │   └── service_test.go
 │   │
 │   └── validator/         # Request validation logic
-│       └── weaather_validation.go
+│       └── weather_validation.go
 |       └── weather_validation_test.go
 │
 ├── app/                   # API specification
