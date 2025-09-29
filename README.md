@@ -20,22 +20,26 @@ It follows a **clean architecture approach** with separate layers for configurat
 │   └── prod.yaml
 │
 ├── internal/              # Core application logic
-│   ├── handler/           # HTTP handlers
+│   ├── handler/           # HTTP handlers (API endpoints)
 │   │   ├── handler.go
 │   │   └── handler_test.go
 │   │
-│   ├── metrics/           # Metrics exposition (Prometheus, custom metrics)
+│   ├── metrics/           # Metrics exposition (Prometheus, etc.)
 │   │   └── metrics.go
 │   │
-│   ├── models/            # Data models
+│   ├── models/            # Data models (structs, DB models, etc.)
 │   │   └── model.go
 │   │
 │   ├── routes/            # HTTP route registration
 │   │   └── routes.go
 │   │
-│   └── service/           # Business logic
-│       ├── service.go
-│       └── service_test.go
+│   ├── service/           # Business logic (core services)
+│   │   ├── service.go
+│   │   └── service_test.go
+│   │
+│   └── validator/         # Request validation logic
+│       └── weaather_validation.go
+|       └── weather_validation_test.go
 │
 ├── app/                   # API specification
 │   └── swagger.yaml
