@@ -9,31 +9,46 @@ It follows a **clean architecture approach** with separate layers for configurat
 
 ```
 .
-├── cmd/                # Application entrypoint
+├── cmd/                   # Application entrypoint
 │   └── main.go
-├── config/             # Configuration files
+│
+├── config/                # Configuration files
 │   └── config.go
-├── helm/               # Environment configs
+│
+├── helm/                  # Environment configs
 │   ├── local.yaml
 │   └── prod.yaml
-├── internal/           # Core application logic
-│   ├── handler/        # HTTP handlers
+│
+├── internal/              # Core application logic
+│   ├── handler/           # HTTP handlers
 │   │   ├── handler.go
 │   │   └── handler_test.go
-│   ├── models/         # Data models
+│   │
+│   ├── metrics/           # Metrics exposition (Prometheus, custom metrics)
+│   │   └── metrics.go
+│   │
+│   ├── models/            # Data models
 │   │   └── model.go
-│   └── service/        # Business logic
+│   │
+│   ├── routes/            # HTTP route registration
+│   │   └── routes.go
+│   │
+│   └── service/           # Business logic
 │       ├── service.go
 │       └── service_test.go
-├── app/                # API specification
+│
+├── app/                   # API specification
 │   └── swagger.yaml
-├── tests/              # Integration tests
+│
+├── tests/                 # Integration tests
 │   └── api_integration_test.go
-├── Dockerfile
-├── docker-compose.yml
-├── Makefile
-├── go.mod / go.sum
-└── README.md
+│
+├── Dockerfile             # Docker build config
+├── docker-compose.yml     # Compose file for local dev
+├── Makefile               # Build/test automation
+├── go.mod / go.sum        # Go dependencies
+└── README.md              # Project documentation
+
 ```
 
 ---
