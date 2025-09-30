@@ -21,9 +21,6 @@ down:
 build-docker:
 	docker compose build
 
-test-docker:
-	docker exec $(APP_NAME) go test ./tests/...
-
 clean:
 	rm -rf bin/
 	docker compose down --rmi all -v
