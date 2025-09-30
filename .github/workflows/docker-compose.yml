@@ -75,7 +75,6 @@ jobs:
       - name: Clean up
         if: always()
         run: |
-          make logs || true
           make clean || true
       # Step 11: Upload logs as artifacts (on failure)
       - name: Upload logs
