@@ -55,7 +55,6 @@ It follows a **clean architecture approach** with separate layers for configurat
 
 ```
 ---
-
 ## 🚀 Getting Started
 
 ### Prerequisites
@@ -64,6 +63,7 @@ It follows a **clean architecture approach** with separate layers for configurat
 - [Make](https://www.gnu.org/software/make/)
 
 ### Setup & Run
+---
 ---
 ```bash
 # Clone repo
@@ -74,17 +74,9 @@ cd <repo-name>
 go run ./cmd/main.go
 
 # Or use docker-compose
-rm -rf bin/                                                    
-        docker compose down --rmi all -v
-
-docker compose build
-
-docker compose up -d
-
-docker run -it --entrypoint sh weather-app-weather-app
+docker compose -f docker-compose.yml up --build -d
 ```
 ---
-
 The service will start on the port defined in `config/local.yaml`.
 
 ## 🧪 Testing
@@ -100,13 +92,13 @@ go test ./...
 go test ./tests/...
 ```
 ---
-
 ## 📖 API Documentation
 
 The API is documented using **Swagger**.  
 File: [`app/swagger.yaml`](app/swagger.yaml)  
 
 You can view it locally with:
+---
 ---
 ```bash
 docker run -p 8080:8080 -e SWAGGER_JSON=/swagger.yaml     -v $(pwd)/app/swagger.yaml:/swagger.yaml swaggerapi/swagger-ui
