@@ -79,6 +79,6 @@ func TestGetWeatherHandler_InvalidCoordinates(t *testing.T) {
 
 	h.GetWeatherHandler(w, req)
 
-	assert.Equal(t, http.StatusInternalServerError, w.Code)
+	assert.Equal(t, http.StatusBadRequest, w.Code)
 	assert.Contains(t, w.Body.String(), "invalid coordinates")
 }

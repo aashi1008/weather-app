@@ -3,9 +3,7 @@ package service
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
-	"io"
 	"net/http"
 
 	"github.com/aashi1008/weather-app/config"
@@ -28,32 +26,36 @@ func NewWeatherService(appcfg *config.AppConfig) WeatherService {
 	}
 }
 
-
 func (ws *weatherService) GetCurrentWeatherResponse(ctx context.Context, req model.Request) (*model.CurrentWeatherResponse, error) {
-	err := valid.ValidateCoordinates(req.Lat, req.Lon)
-	if err != nil {
-		return nil, errors.New("invalid coordinates")
-	}
-
 	lat, lon := valid.GetCoordinates(req.Lat, req.Lon)
 
 	url := fmt.Sprintf("%s?latitude=%.6f&longitude=%.6f&current=temperature_2m,wind_speed_10m", ws.cfg.BaseURL, lat, lon)
-	fmt.Println(url)
-	resp, err := http.Get(url)
+
+	request, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("cannot create request:%s", err)
+	}
+	resp, err := ws.cfg.HttpClient.Do(request)
 	if err != nil {
 		resp.Body.Close()
-		return nil, err
+		return nil, fmt.Errorf("failed to get response:%s", err)
 	}
 
 	defer resp.Body.Close()
 
-	res, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
+	// res, err := io.ReadAll(resp.Body)
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	// var apiresponse model.OpenMeteoResponse
+	// err = json.Unmarshal(res, &apiresponse)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
 	var apiresponse model.OpenMeteoResponse
-	err = json.Unmarshal(res, &apiresponse)
+	err = json.NewDecoder(resp.Body).Decode(&apiresponse)
 	if err != nil {
 		return nil, err
 	}

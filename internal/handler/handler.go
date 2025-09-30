@@ -1,12 +1,15 @@
 package handler
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"github.com/aashi1008/weather-app/internal/metrics"
 	model "github.com/aashi1008/weather-app/internal/models"
 	"github.com/aashi1008/weather-app/internal/service"
+	valid "github.com/aashi1008/weather-app/internal/validator"
 )
 
 type WeatherHandler struct {
@@ -40,14 +43,27 @@ func (h *WeatherHandler) GetWeatherHandler(w http.ResponseWriter, r *http.Reques
 	// 	return
 	// }
 
-	apiresponse, err := h.svc.GetCurrentWeatherResponse(r.Context(), req)
+	err = valid.ValidateCoordinates(req.Lat, req.Lon)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		writeError(w, http.StatusBadRequest, "invalid coordinates")
 		return
+	}
+
+	ctx, cancel := context.WithTimeout(r.Context(), 10*time.Second)
+	defer cancel()
+	apiresponse, err := h.svc.GetCurrentWeatherResponse(ctx, req)
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, err.Error())
 	}
 
 	h.m.WeatherHttpRequests.WithLabelValues().Inc()
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(apiresponse)
 
+}
+
+func writeError(w http.ResponseWriter, status int, msg string) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+	_ = json.NewEncoder(w).Encode(map[string]string{"error": msg})
 }

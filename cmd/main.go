@@ -16,15 +16,15 @@ func main() {
 
 	p := prometheus.NewRegistry()
 	m := metrics.NewMetrics(p)
-	
+
 	httpClient := &http.Client{}
 
 	appConfig := config.NewAppConfig(httpClient)
 	weatherService := service.NewWeatherService(appConfig)
 	weatherHandler := handler.NewWeatherHandler(weatherService, m)
 
-	routes.SetupRoutes(weatherHandler,m)
-	
+	routes.SetupRoutes(weatherHandler, m)
+	log.Print("Starting server at port:", appConfig.Port)
 	if err := http.ListenAndServe(":"+appConfig.Port, nil); err != nil {
 		log.Fatal(err)
 	}

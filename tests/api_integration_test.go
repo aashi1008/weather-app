@@ -14,6 +14,7 @@ import (
 
 	"github.com/aashi1008/weather-app/config"
 	"github.com/aashi1008/weather-app/internal/handler"
+	"github.com/aashi1008/weather-app/internal/metrics"
 	model "github.com/aashi1008/weather-app/internal/models"
 	"github.com/aashi1008/weather-app/internal/service"
 )
@@ -38,7 +39,7 @@ func TestWeatherApp_Integration(t *testing.T) {
 	// Wire up app (real config, service, handler)
 	appCfg := config.NewAppConfig(&http.Client{})
 	ws := service.NewWeatherService(appCfg)
-	wh := handler.NewWeatherHandler(ws)
+	wh := handler.NewWeatherHandler(ws, nil)
 
 	// Register handlers globally (like in main.go)
 	http.HandleFunc("/weather", wh.GetWeatherHandler)

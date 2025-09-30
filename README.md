@@ -1,12 +1,12 @@
+
 # Weather Service API
 
 This project is a **Go-based service** that provides weather-related functionality with validation, service layer, and API handlers.  
 It follows a **clean architecture approach** with separate layers for configuration, models, services, validators, and handlers.  
 
----
-
 ## 📂 Project Structure
 
+---
 ```
 .
 ├── cmd/                   # Application entrypoint
@@ -54,7 +54,6 @@ It follows a **clean architecture approach** with separate layers for configurat
 └── README.md              # Project documentation
 
 ```
-
 ---
 
 ## 🚀 Getting Started
@@ -65,6 +64,7 @@ It follows a **clean architecture approach** with separate layers for configurat
 - [Make](https://www.gnu.org/software/make/)
 
 ### Setup & Run
+---
 ```bash
 # Clone repo
 git clone <repo-url>
@@ -74,17 +74,24 @@ cd <repo-name>
 go run ./cmd/main.go
 
 # Or use docker-compose
-docker-compose up --build
+rm -rf bin/                                                    
+        docker compose down --rmi all -v
+
+docker compose build
+
+docker compose up -d
+
+docker run -it --entrypoint sh weather-app-weather-app
 ```
+---
 
 The service will start on the port defined in `config/local.yaml`.
-
----
 
 ## 🧪 Testing
 
 Unit and integration tests are included. Run them with:
 
+---
 ```bash
 # Run all tests
 go test ./...
@@ -92,7 +99,6 @@ go test ./...
 # Run integration tests
 go test ./tests/...
 ```
-
 ---
 
 ## 📖 API Documentation
@@ -101,12 +107,12 @@ The API is documented using **Swagger**.
 File: [`app/swagger.yaml`](app/swagger.yaml)  
 
 You can view it locally with:
+---
 ```bash
 docker run -p 8080:8080 -e SWAGGER_JSON=/swagger.yaml     -v $(pwd)/app/swagger.yaml:/swagger.yaml swaggerapi/swagger-ui
 ```
-Then open [http://localhost:8080](http://localhost:8080) in your browser.
-
 ---
+Then open [http://localhost:8080](http://localhost:8080) in your browser.
 
 ## ⚙️ Features
 
@@ -116,8 +122,6 @@ Then open [http://localhost:8080](http://localhost:8080) in your browser.
 - Unit tests + integration tests
 - Docker & Makefile support
 - Swagger API specification
-
----
 
 ## 📌 Notes
 
